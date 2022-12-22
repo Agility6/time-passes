@@ -28,11 +28,11 @@ export default {
   data() {
     return {
       hourString: '00',
-      minString: '59',
-      secString: '55',
+      minString: '00',
+      secString: '00',
       hour: 0,
-      min: 59,
-      sec: 55
+      min: 0,
+      sec: 0
     }
   },
   watch: {
@@ -57,7 +57,6 @@ export default {
     startTime() {
       clearInterval(this.timeIntervId)
       this.timeIntervId = setInterval(() => {
-        console.log(this.sec);
         this.secString = this.sec < 10 ? `0${this.sec++}` : `${this.sec++}`
       }, 1000)
     },
