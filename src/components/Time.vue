@@ -2,16 +2,7 @@
   <div class="container">
 
     <div class="time-container">
-      <div class="hour-container">
-        <div class="time-font">{{ hourString }}</div>
-      </div>
-      <span class="time-font ">:</span>
-      <div class="time-container-style">
-        <div class="min time-font">{{ minString }}</div>
-      </div>
-      <div class="time-container-style">
-        <div class="time-font">{{ secString }}</div>
-      </div>
+      <div class="time-string-font">{{ timeString }}</div>
     </div>
 
     <div class="btn-container">
@@ -27,49 +18,37 @@ export default {
   name: 'Time',
   data() {
     return {
-      hourString: '00',
-      minString: '00',
-      secString: '00',
+      timeString: "00:00:00",
       hour: 0,
       min: 0,
       sec: 0
     }
   },
-  watch: {
-    sec() {
-      if(this.sec === 62) {
-        this.secString = '00'
-        this.sec = 0
-        this.min++
-        this.minChange()
-      }
-    },
-    min() {
-      if(this.min === 60) {
-        this.minString = '00'
-        this.min = 0
-        this.hour++
-        this.hourChange()
-      }
-    }
-  },
   methods: {
     startTime() {
-      clearInterval(this.timeIntervId)
-      this.timeIntervId = setInterval(() => {
-        this.secString = this.sec < 10 ? `0${this.sec++}` : `${this.sec++}`
+      // 重复点击
+      if(this.timer) clearInterval(this.timer)
+
+      this.timer = setInterval(() => {
+        this.sec += 1;
+        if(this.sec >= 60) {
+          this.sec = 0;
+          this.min = this.min + 1;
+        }
+        if(this.min >= 60) {
+          this.min = 0;
+          this.hour = this.hour + 1;
+        }
+        this.timeString = `${this.toFull(this.hour)}:${this.toFull(this.min)}:${this.toFull(this.sec)}`
       }, 1000)
     },
     stopTime() {
-      clearInterval(this.timeIntervId)
+      clearInterval(this.timer)
     },
-    minChange() {
-      this.minString = this.min < 10 ? `0${this.min}` : this.min 
-    },
-    hourChange() {
-      this.hourString = this.hour < 10 ? `0${this.hour}` : this.hour
+    toFull(time) {
+      return time < 10? "0"+time : time
     }
-  },
+  }
 }
 </script>
 
@@ -82,32 +61,14 @@ export default {
   width: 100%;
   height: 100%;
   .time-container {
-    display: flex;
-    width: 1000px;
-    height: 230px;
-    justify-content: center;
-    // background-color: #A69580;      
-    .hour-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-right: 50px;
-    }
-    .time-container-style {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      .min {
-        margin: 0 50px;
-      }
-    }
-    .time-font {
-      font-size: 180px;
-      font-weight: 900;
-    }
-    span {
-      line-height: 200px;
-    }
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   height: 200px;
+   .time-string-font {
+    font-size: 150px;
+    font-weight: 900;
+   }
   }
   .btn-container {
     display: flex;
